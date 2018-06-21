@@ -12,6 +12,22 @@ class CreateThreadsTest extends TestCase
     use DatabaseMigrations;
     use HandlesThreads;
 
+    public function testUserCanSeeThreadCreateForm()
+    {
+        $this->signIn()
+            ->get($this->threadCreateRoute())
+            ->assertStatus(200)
+            ->assertSee('Create a new Thread');
+    }
+
+    public function testGuestCannotSeeThreadCreateForm()
+    {
+        $this->withExceptionHandling()
+            ->get($this->threadCreateRoute())
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
+    }
+
     public function testUserCanCreateThreads()
     {
         $thread = $this->makeTestThread();
@@ -31,4 +47,6 @@ class CreateThreadsTest extends TestCase
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $this->post($this->threadStoreRoute(), $thread->toArray());
     }
+
+
 }

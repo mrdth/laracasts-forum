@@ -23,6 +23,11 @@ trait HandlesThreads
         return route('threads.store');
     }
 
+    protected function threadCreateRoute()
+    {
+        return route('threads.create');
+    }
+
     protected function makeTestThread($attributes = [])
     {
         return factory('App\Thread')->make($attributes);
