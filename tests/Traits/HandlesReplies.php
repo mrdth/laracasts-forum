@@ -17,4 +17,14 @@ trait HandlesReplies
     {
         return route('reply.store', $thread);
     }
+
+    protected function makeTestReply($attributes = [])
+    {
+        return factory('App\Reply')->make($attributes);
+    }
+
+    protected function createTestReply($attributes = [])
+    {
+        return factory('App\Reply')->create($attributes);
+    }
 }

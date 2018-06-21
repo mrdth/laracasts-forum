@@ -4,12 +4,14 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
+use Tests\Traits\HandlesReplies;
 use Tests\Traits\HandlesThreads;
 
 class ReadThreadsTest extends TestCase
 {
     use DatabaseMigrations;
     use HandlesThreads;
+    use HandlesReplies;
 
     protected $thread;
 
@@ -17,7 +19,7 @@ class ReadThreadsTest extends TestCase
     {
         parent::setUp();
 
-        $this->thread = factory('App\Thread')->create();
+        $this->thread = $this->createTestThread();
     }
 
     public function testUserCanBrowseThreads()
@@ -37,7 +39,7 @@ class ReadThreadsTest extends TestCase
 
     public function testUserCanReadRepliesForThread()
     {
-        $reply = factory('App\Reply')->create(['thread_id' => $this->thread->id]);
+        $reply = $this->createTestReply(['thread_id' => $this->thread->id]);
 
         $this->get($this->threadShowRoute($this->thread))
             ->assertStatus(200)

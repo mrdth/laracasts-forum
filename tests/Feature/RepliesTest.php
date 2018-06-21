@@ -15,11 +15,12 @@ class RepliesTest extends TestCase
 
     public function testAuthenticatedUserCanReplyToThread()
     {
-        $thread = factory('App\Thread')->create();
-        $reply = factory('App\Reply')->raw();
+        $thread = $this->makeTestThread();
+        $thread->save();
+        $reply = $this->makeTestReply();
 
-        $this->actingAs($user = factory('App\User')->create())
-            ->post($this->replyStoreRoute($thread), $reply);
+        $this->signIn()
+            ->post($this->replyStoreRoute($thread), $reply->toArray());
 
         $this->get($this->threadShowRoute($thread))
             ->assertSee($reply['body']);
@@ -28,11 +29,12 @@ class RepliesTest extends TestCase
 
     public function testGuestsCannotReplyToThread()
     {
-        $thread = factory('App\Thread')->create();
-        $reply = factory('App\Reply')->raw();
+        $thread = $this->makeTestThread();
+        $thread->save();
+        $reply = $this->makeTestReply();
 
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->post($this->replyStoreRoute($thread), $reply);
+        $this->post($this->replyStoreRoute($thread), $reply->toArray());
 
     }
 }
