@@ -2,15 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Thread;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
+use Tests\Traits\HandlesThreads;
 
 class ReadThreadsTest extends TestCase
 {
     use DatabaseMigrations;
+    use HandlesThreads;
 
     protected $thread;
 
@@ -19,11 +18,6 @@ class ReadThreadsTest extends TestCase
         parent::setUp();
 
         $this->thread = factory('App\Thread')->create();
-    }
-
-    protected function threadShowRoute(Thread $thread): string
-    {
-        return route('threads.show', $thread);
     }
 
     public function testUserCanBrowseThreads()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Thread;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ThreadsController extends Controller
@@ -32,12 +33,18 @@ class ThreadsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request $request
+     * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $thread = Thread::create([
+            'user_id' => $request->user()->id,
+            'title' => $request->title,
+            'body' => $request->body,
+        ]);
+
+        return redirect(route('threads.show', $thread));
     }
 
     /**
