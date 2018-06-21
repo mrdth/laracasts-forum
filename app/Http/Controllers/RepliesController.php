@@ -31,12 +31,15 @@ class RepliesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Thread $thread)
     {
-        $thread->addReply($request->only(['user_id', 'body']));
+        $thread->addReply([
+            'user_id' => $request->user()->id,
+            'body' => $request->body
+        ]);
 
         return back();
     }
@@ -44,7 +47,7 @@ class RepliesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\reply  $reply
+     * @param  \App\reply $reply
      * @return \Illuminate\Http\Response
      */
     public function show(reply $reply)
@@ -55,7 +58,7 @@ class RepliesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\reply  $reply
+     * @param  \App\reply $reply
      * @return \Illuminate\Http\Response
      */
     public function edit(reply $reply)
@@ -66,8 +69,8 @@ class RepliesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\reply  $reply
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\reply $reply
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, reply $reply)
@@ -78,7 +81,7 @@ class RepliesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\reply  $reply
+     * @param  \App\reply $reply
      * @return \Illuminate\Http\Response
      */
     public function destroy(reply $reply)
