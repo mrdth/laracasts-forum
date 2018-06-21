@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Thread;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -11,7 +12,7 @@ class ReadThreadsTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private $thread;
+    protected $thread;
 
     protected function setUp()
     {
@@ -20,30 +21,32 @@ class ReadThreadsTest extends TestCase
         $this->thread = factory('App\Thread')->create();
     }
 
+    protected function threadShowRoute(Thread $thread): string
+    {
+        return route('threads.show', $thread);
+    }
+
     public function testUserCanBrowseThreads()
     {
-        $response = $this->get('/threads');
-
-        $response->assertStatus(200);
-        $response->assertSee($this->thread->title);
+        $this->get('/threads')
+            ->assertStatus(200)
+            ->assertSee($this->thread->title);
 
     }
 
     public function testUserCanViewThread()
     {
-        $response = $this->get('/threads/' . $this->thread->id);
-
-        $response->assertStatus(200);
-        $response->assertSee($this->thread->title);
+        $this->get($this->threadShowRoute($this->thread))
+            ->assertStatus(200)
+            ->assertSee($this->thread->title);
     }
 
     public function testUserCanReadRepliesForThread()
     {
         $reply = factory('App\Reply')->create(['thread_id' => $this->thread->id]);
 
-        $response = $this->get('/threads/' . $this->thread->id);
-
-        $response->assertStatus(200);
-        $response->assertSee($reply->body);
+        $this->get($this->threadShowRoute($this->thread))
+            ->assertStatus(200)
+            ->assertSee($reply->body);
     }
 }
