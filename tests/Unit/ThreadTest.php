@@ -5,10 +5,12 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\Traits\HandlesThreads;
 
 class ThreadTest extends TestCase
 {
     use DatabaseMigrations;
+    use HandlesThreads;
 
     protected $thread;
 
@@ -16,7 +18,7 @@ class ThreadTest extends TestCase
     {
         parent::setUp();
 
-        $this->thread = factory('App\Thread')->create();
+        $this->thread = $this->createTestThread();
     }
 
     public function testThreadHasReplies()
@@ -27,6 +29,19 @@ class ThreadTest extends TestCase
     public function testThreadHasAnAuthor()
     {
         $this->assertInstanceOf('App\User', $this->thread->author);
+    }
+
+    public function testThreadBelongsToChannel()
+    {
+        $this->assertInstanceOf('App\Channel', $this->thread->channel);
+    }
+
+    public function testThreadCanGenerateItsUri()
+    {
+        $this->assertEquals(
+            route('threads.show', ['channel' => $this->thread->channel, 'thread' => $this->thread]),
+            $this->thread->getUri()
+        );
     }
 
     public function testThreadCanAddReply()

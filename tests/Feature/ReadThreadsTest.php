@@ -24,7 +24,7 @@ class ReadThreadsTest extends TestCase
 
     public function testUserCanBrowseThreads()
     {
-        $this->get('/threads')
+        $this->get($this->threadIndexRoute())
             ->assertStatus(200)
             ->assertSee($this->thread->title);
 

@@ -13,9 +13,14 @@ use App\Thread;
 
 trait HandlesThreads
 {
+    protected function threadIndexRoute(): string
+    {
+        return route('threads.index');
+    }
+
     protected function threadShowRoute(Thread $thread): string
     {
-        return route('threads.show', $thread);
+        return $thread->getUri();
     }
 
     protected function threadStoreRoute(): string

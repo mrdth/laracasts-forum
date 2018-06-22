@@ -42,10 +42,10 @@ class CreateThreadsTest extends TestCase
 
     public function testGuestCannotCreateThreads()
     {
-        $thread = $this->makeTestThread();
-
-        $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->post($this->threadStoreRoute(), $thread->toArray());
+        $this->withExceptionHandling()
+            ->post($this->threadStoreRoute())
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
     }
 
 
